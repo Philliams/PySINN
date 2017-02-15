@@ -28,6 +28,10 @@ res = model.predict_on_batch(test_arr)
 
 print(res)
 
+print("=====================")
+print("=====================")
+print("=====================")
+
 # ///////////// shepard testing code ////////////////
 
 input_arr = np.array([[2,1,0],[1,2,0],[1,1,0]])
@@ -44,6 +48,10 @@ model.compile(optimizer='adagrad',loss='mse')
 res = model.predict_on_batch(input_arr)
 
 print(res)
+
+print("=====================")
+print("=====================")
+print("=====================")
 
 # ///////////// integration testing code ////////////////
 
@@ -73,6 +81,9 @@ s = Shepard(output_arr)(m)
 model = Model(input=inputs, output=s)
 
 model.compile(optimizer='RMSprop',loss='mae')
+
+print(model.predict_on_batch(input_arr) - output_arr)
+print("=====================")
 
 input_arr = []
 output_arr = []
@@ -105,8 +116,13 @@ for i in range(25):
 input_arr = np.array(input_arr)
 output_arr = np.array(output_arr)
 
+print("=====================")
+
 print(model.predict_on_batch(input_arr))
 print(output_arr)
+
+print("=====================")
+
 
 
 

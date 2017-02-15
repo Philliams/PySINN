@@ -10,7 +10,7 @@ class Metric(Layer):
         self.nodes     = len(initiation_matrix)
 
         self.B = K.variable(initiation_matrix)
-        self.P = K.variable(2)
+        self.P = K.variable(4)
 
         # keras variables
         self.inbound_nodes = []
@@ -29,7 +29,7 @@ class Metric(Layer):
         self.A = K.variable(np.full((self.nodes, self.input_dim), 1,dtype='float64'))
 
         # tell keras which ones are trained
-        self.trainable_weights = [self.W,self.B,self.A]
+        self.trainable_weights = [self.W,self.A]
 
         # keras constructor call
         super(Metric, self).build(input_shape)
@@ -50,7 +50,7 @@ class Metric(Layer):
         B = K.expand_dims(self.B, dim=0)
         B = K.repeat_elements(B,batch_size,0)
 
-        result = 1 / ( K.sum(K.abs(A * (W * x - B)), axis=2) + 1e-6)
+        result = 1 / ( K.sum(K.abs(A * (W * x - B)), axis=2) + 1e-10)
         denominator = K.max(result, axis = 1)
         denominator = K.expand_dims(denominator,dim=1)
         denominator = K.repeat_elements(denominator, self.nodes, axis=1)
@@ -99,7 +99,7 @@ class Shepard(Layer):
         y = K.expand_dims(y,dim=1)
         y = K.repeat_elements(y,input_size,1)
 
-        x = x / ( y + 1e-6)
+        x = x / ( y + 1e-10)
 
         x = K.expand_dims(x, dim=1)
         x = K.repeat_elements(x, self.output_dim, 1)

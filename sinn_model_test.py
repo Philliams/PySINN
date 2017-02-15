@@ -1,31 +1,48 @@
 # SINN_model_test.py
 
-import random
 from sinn_model import SINN_model
+from keras.datasets import mnist
+import numpy as np
 
-x_possible = [-1,1]
-y_possible = [-1,1]
-# z_possible = [-2,-1,1,2]
+(X_train, Y_train), (X_test, Y_test) = mnist.load_data()
 
-test_data   = []
-test_labels = []
+data_training   = []
+labels_training = []
 
-for i in range(100):
+data_testing   = []
+labels_testing = []
 
-	x = random.choice(x_possible)
-	y = random.choice(y_possible)
-	z = x * y
+print('starting...')
 
-	x += random.uniform(-0.1,0.1)
-	y += random.uniform(-0.1,0.1)
-	z += random.uniform(-0.1,0.1)
+for i in range(len(X_train)):
 
-	test_data.append([x,y])
-	test_labels.append([z])
+	data_training.append( X_train[i].flatten('C'))
 
-s = SINN_model(test_data,test_labels,4,4,100,10)
-s.train_model(test_data,test_labels)
+	classification = Y_train[i]
 
-test_arr = [[1,1],[-1,-1]]
+	label = np.zeros(10)
+	label[classification] = 1
 
-print(s.predict(test_arr))
+	labels_training.append(label)
+
+print('done processing training data...')
+
+for i in range(len(X_test)):
+
+	data_testing.append( X_test[i].flatten())
+
+	labels_testing.append(Y_test[i])
+
+print('done processing testing data...')
+
+data_training = np.array(data_training)
+labels_training = np.array(labels_training)
+
+data_testing = np.array(data_testing)
+labels_testing = np.array(labels_testing)
+
+s = SINN_model(data_training,labels_training,10,1,500,50,verbose=1,model_optimizer='adagrad',loss_metric='categorical_crossentropy')
+
+s.train_model(data_training,labels_training)
+
+
