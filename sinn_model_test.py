@@ -31,7 +31,12 @@ for i in range(len(X_test)):
 
 	data_testing.append( X_test[i].flatten())
 
-	labels_testing.append(Y_test[i])
+	classification = Y_test[i]
+
+	label = np.zeros(10)
+	label[classification] = 1
+
+	labels_testing.append(label)
 
 print('done processing testing data...')
 
@@ -41,8 +46,7 @@ labels_training = np.array(labels_training)
 data_testing = np.array(data_testing)
 labels_testing = np.array(labels_testing)
 
-s = SINN_model(data_training,labels_training,10,1,500,50,verbose=1,model_optimizer='adagrad',loss_metric='categorical_crossentropy')
+s = SINN_model(data_training,labels_training,8,1,500,25,verbose=1,model_optimizer='RMSprop',loss_metric='categorical_crossentropy')
 
-s.train_model(data_training,labels_training)
-
+s.train_model(data_training,labels_training,data_testing,labels_testing)
 

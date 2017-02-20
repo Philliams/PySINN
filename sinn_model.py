@@ -1,7 +1,7 @@
 # SINN model with k-means initiation
 from sklearn.cluster import KMeans
 import numpy as np
-from keras.layers import Input, Activation
+from keras.layers import Input, Activation, Dropout
 from keras.models import Model
 from sinn_layers import Metric, Shepard
 
@@ -34,7 +34,7 @@ class SINN_model:
 
 		# metric layer
 		m = Metric(initiation_data)(input_layer)
-
+		# d = Dropout(0.2)(m)
 		# shepard layer
 		s = Shepard(initiation_labels)(m)
 
@@ -145,11 +145,18 @@ class SINN_model:
 
 		return self.model.predict_on_batch(input_matrix)
 
-	def train_model(self, input_matrix, output_matrix):
+	def train_model(self, input_matrix, output_matrix, input_test=None, output_test=None):
 
 		print('training starting...')
 
-		self.model.fit( input_matrix, output_matrix , batch_size=self.batch_size, nb_epoch=self.epochs, verbose=self.verbose, validation_split=self.validation_split, shuffle=self.shuffle_data)
+		if( input_test != None):
+			self.model.fit( input_matrix, output_matrix , batch_size=self.batch_size, nb_epoch=self.epochs, verbose=self.verbose, validation_data=(input_test,output_test), shuffle=self.shuffle_data)
+		else:
+			self.model.fit( input_matrix, output_matrix , batch_size=self.batch_size, nb_epoch=self.epochs, verbose=self.verbose, validation_split=self.validation_split, shuffle=self.shuffle_data)
+
+	def evaluate_model(self,input_matrix,output_matrix):
+
+		return self.model.evaluate(input_matrix, output_matrix, batch_size=self.batch_size, verbose=self.verbose)
 
 	def is_matrix_valid(self,k,m):
 
